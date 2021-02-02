@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta charset="utf-8" />
+		<title>扫码登录</title>
+		<link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" rel="stylesheet">
+	</head>
+	<body>
+		<div class="row">
+			<div class="center-block" style="width:450px; margin-top: 50px">
+				<div class="center-block" style="width:450px;">
+					<div style="width:360px;">
+						<input type="text" id="datepicker" class="form-control" placeholder="任务定时时间">
+						<!-- 						<input type="text" class="form-control" id="date_time" placeholder="任务定时时间">
+ -->
+					</div>
+				</div>
+				<div class="center-block" style="width: 450px;">
+					<div style="width:360px;">
+						<input type="file" name="dayreport" id="dayreport">
+					</div>
+				</div>
+				<div class="center-block">
+					<img id="qr">
+				</div>
+				<div class="center-block" style="width:450px;margin-top: 20px">
+					<button id="btnSubmit" style="width:360px;" class="btn btn-success btn-lg" data-loading-text="Loading..." type="button">
+						提交日报
+					</button>
+				</div>
+				<div class="center-block" style="width:450px;margin-top: 20px">
+					<button id="get_qr" style="width:360px;" class="btn btn-success btn-lg" data-loading-text="Loading..." type="button">
+						获取二维码
+					</button>
+				</div>
+				<div class="center-block" style="width:450px;margin-top: 20px">
+					<button id="login" style="width:360px;" class="btn btn-success btn-lg" data-loading-text="Loading..." type="button">
+						登录
+					</button>
+				</div>
+
+			</div>
+		</div>
+	</body>
+	<link href="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.min.css" rel="stylesheet">
+	<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.min.js"></script>
+	<link href="https://cdn.bootcss.com/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.min.css" rel="stylesheet">
+	<script src="https://cdn.bootcss.com/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.min.js"></script>
+	<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script>
+		$(function() {
+			$("#datepicker").datetimepicker({
+
+				dateFormat: "yy-mm-dd",
+				showSecond: true,
+				timeFormat: 'HH:mm:ss',
+
+
+			});
+		});
+		$('#get_qr').click(function() {
+			$('#qr').attr('src', '/send/')
+		});
+		$("#login").click(function() {
+			alert('test');
+			$.get("/login/", function(data) {
+
+			})
+		});
+
+		$("#btnSubmit").click(function() {
+			var datetime = $('#datepicker').val();
+			if (datetime == '') {
+				alert('请选择时间');
+				return false
+			}
+			var formData = new FormData();
+			formData.append("file_name", $("#dayreport")[0].files[0]);
+			formData.append("date_time", datetime);
+			$.ajax({
+				url: '/setdate/',
+				/*接口域名地址*/
+				type: 'post',
+				data: formData,
+				contentType: false,
+				processData: false,
+				success: function(res) {
+					{#debugger#}
+					console.log(res.data);
+					if (res.data["code"] == 0) {
+						alert('成功');
+					} else if (res.data["code"] == "err") {
+						alert('失败');
+					} else {
+						console.log(res);
+					}
+				}
+			})
+
+		})
+	</script>
+</html>
